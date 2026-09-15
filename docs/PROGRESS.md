@@ -3,38 +3,39 @@
 Resumable development checkpoint.
 
 ## Current milestone
-M1 - MCP foundation
+M2 - LinkedIn publishing MVP
 
 ## Completed
-- Repository initialized
-- `feature/mcp-foundation` created
-- Node.js + TypeScript configured
-- MCP stdio server added
-- Safe connection-status and post-preparation tools added
-- Environment template and secret-safe gitignore added
+- M1 foundation reviewed and merged
+- `feature/publishing-mvp` created
+- LinkedIn REST Posts client added
+- LinkedIn image initialization/upload flow added
+- MCP preparation tool supports text and optional image
+- Separate publishing tool requires explicit approval
+- Runtime configuration is never returned by status tool
 
 ## Pending
-1. LinkedIn OAuth
-2. Token storage abstraction
-3. Authenticated member identity
-4. Approval + text publishing
-5. Image upload/publishing
-6. Tests and CI
-7. Security/setup docs
+1. Built-in OAuth onboarding
+2. Secure token persistence/refresh strategy
+3. Automated tests and CI
+4. Full setup/security documentation
+5. Live LinkedIn smoke test
 
 ## Decisions
 - Node.js 20+ and TypeScript
-- Official MCP SDK
-- stdio transport first
-- Human approval before publishing
-- Credentials never committed
-- Small feature branches and frequent commits
+- Official MCP SDK with stdio first
+- Use current LinkedIn `/rest/posts` API rather than legacy UGC for publishing
+- Human approval is a separate MCP tool call
+- MVP accepts runtime LinkedIn publishing configuration; built-in OAuth follows after the publishing path is proven
+- No unattended scheduler in the MCP
+- Small feature branches and frequent checkpoints
 
 ## Current branch
-`feature/mcp-foundation`
+`feature/publishing-mvp`
 
-## Blocker
-End-to-end OAuth testing will require a LinkedIn Developer application.
+## Blockers
+- This environment cannot install npm packages from GitHub/npm, so local build execution was unavailable here.
+- Live publishing requires a LinkedIn Developer application and member authorization.
 
 ## Next exact step
-Review and merge the foundation PR, then start `feature/linkedin-oauth`.
+Review PR for M2, validate build through GitHub/client environment, then perform a harmless live text-post smoke test.
