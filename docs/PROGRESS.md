@@ -53,4 +53,4 @@ M2 - LinkedIn publishing MVP - COMPLETE
 - Token persistence/refresh is intentionally deferred beyond this MVP.
 
 ## Next exact step
-Merge PR #2 into `master`, then create a new feature branch for image-post validation and OAuth UX improvements.
+After merge, create a new feature branch for image-post validation and OAuth UX improvements.
