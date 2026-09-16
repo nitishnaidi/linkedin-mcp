@@ -9,6 +9,6 @@
   "keywords": ["linkedin", "mcp", "model-context-protocol", "ai"],
   "license": "MIT",
   "engines": { "node": ">=20" },
-  "dependencies": { "@modelcontextprotocol/sdk": "^1.17.5", "zod": "^3.25.76" },
+  "dependencies": { "@modelcontextprotocol/sdk": "^1.17.5", "sharp": "^0.34.3", "zod": "^3.25.76" },
   "devDependencies": { "@types/node": "^22.15.0", "tsx": "^4.20.0", "typescript": "^5.8.3" }
 }
