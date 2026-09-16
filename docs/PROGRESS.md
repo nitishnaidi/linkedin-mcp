@@ -3,54 +3,52 @@
 Resumable development checkpoint.
 
 ## Current milestone
-M2 - LinkedIn publishing MVP - COMPLETE
+M3 - Handwritten diagram posting - IN PROGRESS
 
 ## Completed
-- M1 MCP foundation reviewed and merged
-- LinkedIn REST Posts client implemented
-- LinkedIn image initialization/upload flow implemented
-- MCP preparation tool supports text and optional image
-- Separate publishing tool requires explicit human approval
-- LinkedIn OAuth 2.0 onboarding implemented with state validation
-- OAuth identity lookup and member URN configuration implemented
-- Exact local callback documented: `http://127.0.0.1:8787/callback`
-- Credentials/tokens are not exposed by the status tool
-- CI workflow added for typecheck and build
-- Setup, security, and live-test documentation added
+- M1 MCP foundation merged
+- M2 LinkedIn publishing MVP merged
 - Live OAuth smoke test passed using Claude Desktop
-- Live text-post publishing smoke test passed on LinkedIn on 2026-09-16
-- Reviewer pass aligned package/server version at 0.3.0 and documented required OpenID Connect product
+- Live human-approved text publishing passed on LinkedIn
+- Beginner-friendly README added with end-to-end setup and troubleshooting
+- Created `feature/handwritten-diagram-posting`
+- Added typed handwritten diagram specification and validation
+- Added `prepare_handwritten_diagram` MCP tool
+- Diagram preparation remains separate from rendering and publishing
 
-## Follow-up backlog
-1. Test the single-image publishing path against LinkedIn live
-2. Improve OAuth UX so connection completion is more obvious to MCP clients
-3. Add durable encrypted token persistence/refresh for long-running deployments
-4. Add automated unit/integration tests with mocked LinkedIn responses
-5. Add packaging/release workflow for easier installation
+## M3 task breakdown
+1. [DONE] Define safe diagram input/specification
+2. [DONE] Expose diagram preparation tool for AI clients
+3. [CURRENT] Implement deterministic handwritten-style renderer that writes a local image
+4. [PENDING] Add render tool returning the generated image path for preview
+5. [PENDING] Connect reviewed rendered image to existing approval-gated LinkedIn image publisher
+6. [PENDING] Add tests for diagram validation/rendering
+7. [PENDING] Run typecheck/build and reviewer pass
+8. [PENDING] Open PR and perform live handwritten-image smoke test before merge
 
 ## Decisions
 - Node.js 20+ and TypeScript
 - Official MCP SDK with stdio first
-- Use LinkedIn `/rest/posts` rather than legacy UGC for publishing
-- Human approval remains a separate MCP tool call
-- OAuth access tokens remain process-local in the MVP; restart requires reconnecting
+- Use LinkedIn `/rest/posts`
+- Human approval remains mandatory and separate from preparation/rendering
+- Diagram generation and LinkedIn publication must remain separate actions
+- MVP diagram complexity capped at 12 nodes and 20 edges
+- Generated artifact must be previewable before publishing
 - No unattended scheduler in the MCP
-- Small feature branches and frequent resumable checkpoints
+- Small tasks and frequent resumable checkpoints
 
 ## Current branch
-`feature/publishing-mvp`
+`feature/handwritten-diagram-posting`
 
-## Validation
-- Real LinkedIn Developer App configured with Share on LinkedIn and Sign In with LinkedIn using OpenID Connect
+## Existing validation
 - OAuth browser authorization completed successfully
 - MCP token exchange completed successfully
-- `linkedin_connection_status` returned configured after OAuth completion
 - Human-approved text post successfully published to the authorized member profile
-- PR #2 reviewed and mergeable
 
 ## Known limitations
-- Image publishing code is implemented but has not yet received a live LinkedIn smoke test.
-- Token persistence/refresh is intentionally deferred beyond this MVP.
+- Existing single-image publishing path still needs a live LinkedIn smoke test.
+- Handwritten renderer is not implemented yet.
+- Token persistence/refresh remains deferred.
 
 ## Next exact step
-After merge, create a new feature branch for image-post validation and OAuth UX improvements.
+Implement `src/diagram-renderer.ts` to convert the validated diagram specification into a deterministic handwritten-style local image without publishing it.
