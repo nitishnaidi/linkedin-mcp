@@ -14,14 +14,16 @@ Open-source MCP server for user-approved LinkedIn publishing.
 
 - Node.js 20+
 - LinkedIn Developer App with **Share on LinkedIn** enabled
+- LinkedIn Developer App with **Sign In with LinkedIn using OpenID Connect** enabled
 - OAuth scopes `openid`, `profile`, and `w_member_social`
 
 ## Setup
 
 1. Clone the repository and run `npm install` then `npm run build`.
-2. In your LinkedIn Developer App, add this exact Authorized redirect URL: `http://127.0.0.1:8787/callback`.
-3. Set `LINKEDIN_CLIENT_ID`, `LINKEDIN_CLIENT_SECRET`, and `LINKEDIN_REDIRECT_URI=http://127.0.0.1:8787/callback` in the environment used to launch the MCP server. Never commit the secret.
-4. Configure your MCP client to run `node /absolute/path/to/linkedin-mcp/dist/index.js` with those environment variables.
+2. In your LinkedIn Developer App, enable **Share on LinkedIn** and **Sign In with LinkedIn using OpenID Connect**.
+3. Add this exact Authorized redirect URL: `http://127.0.0.1:8787/callback`.
+4. Set `LINKEDIN_CLIENT_ID`, `LINKEDIN_CLIENT_SECRET`, and `LINKEDIN_REDIRECT_URI=http://127.0.0.1:8787/callback` in the environment used to launch the MCP server. Never commit the secret.
+5. Configure your MCP client to run `node /absolute/path/to/linkedin-mcp/dist/index.js` with those environment variables.
 
 ## Test flow
 
