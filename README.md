@@ -43,6 +43,10 @@ Run `npm run typecheck` and `npm run build`. GitHub Actions performs both checks
 
 See `docs/PROGRESS.md` for the resumable implementation checkpoint.
 
+## MVP validation
+
+OAuth and human-approved text publishing were successfully smoke-tested against a real LinkedIn member account on September 16, 2026. The image path remains implemented but awaits its separate live smoke test.
+
 ## License
 
 MIT
