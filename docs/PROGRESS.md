@@ -19,6 +19,7 @@ M2 - LinkedIn publishing MVP - COMPLETE
 - Setup, security, and live-test documentation added
 - Live OAuth smoke test passed using Claude Desktop
 - Live text-post publishing smoke test passed on LinkedIn on 2026-09-16
+- Reviewer pass aligned package/server version at 0.3.0 and documented required OpenID Connect product
 
 ## Follow-up backlog
 1. Test the single-image publishing path against LinkedIn live
@@ -40,11 +41,12 @@ M2 - LinkedIn publishing MVP - COMPLETE
 `feature/publishing-mvp`
 
 ## Validation
-- Real LinkedIn Developer App configured with Share on LinkedIn and OpenID Connect
+- Real LinkedIn Developer App configured with Share on LinkedIn and Sign In with LinkedIn using OpenID Connect
 - OAuth browser authorization completed successfully
 - MCP token exchange completed successfully
 - `linkedin_connection_status` returned configured after OAuth completion
 - Human-approved text post successfully published to the authorized member profile
+- PR #2 reviewed and mergeable
 
 ## Known limitations
 - Image publishing code is implemented but has not yet received a live LinkedIn smoke test.
