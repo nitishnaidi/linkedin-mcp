@@ -3,52 +3,45 @@
 Resumable development checkpoint.
 
 ## Current milestone
-M3 - Handwritten diagram posting - IN PROGRESS
+M3 - Handwritten diagram posting - IMPLEMENTED
 
 ## Completed
 - M1 MCP foundation merged
-- M2 LinkedIn publishing MVP merged
-- Live OAuth smoke test passed using Claude Desktop
-- Live human-approved text publishing passed on LinkedIn
-- Beginner-friendly README added with end-to-end setup and troubleshooting
-- Created `feature/handwritten-diagram-posting`
-- Added typed handwritten diagram specification and validation
-- Added `prepare_handwritten_diagram` MCP tool
-- Diagram preparation remains separate from rendering and publishing
+- M2 LinkedIn publishing MVP merged and live text post validated
+- Beginner-friendly README
+- Typed diagram specification and validation
+- `prepare_handwritten_diagram` MCP tool
+- Deterministic local handwritten-style SVG renderer
+- `render_handwritten_diagram` MCP preview tool
+- Render and publish remain separate actions
+- Existing explicit approval-gated image publisher accepts rendered artifact paths
+- Version bumped to 0.4.0
 
 ## M3 task breakdown
-1. [DONE] Define safe diagram input/specification
-2. [DONE] Expose diagram preparation tool for AI clients
-3. [CURRENT] Implement deterministic handwritten-style renderer that writes a local image
-4. [PENDING] Add render tool returning the generated image path for preview
-5. [PENDING] Connect reviewed rendered image to existing approval-gated LinkedIn image publisher
-6. [PENDING] Add tests for diagram validation/rendering
-7. [PENDING] Run typecheck/build and reviewer pass
-8. [PENDING] Open PR and perform live handwritten-image smoke test before merge
+1. [DONE] Diagram specification and validation
+2. [DONE] Diagram preparation tool
+3. [DONE] Deterministic local renderer
+4. [DONE] Render/preview tool
+5. [DONE] Connect rendered artifact path to existing approval-gated publisher
+6. [DONE] Typecheck/build CI validation
+7. [CURRENT] Reviewer pass and merge PR #3
+8. [FOLLOW-UP] Live LinkedIn handwritten-image smoke test
 
 ## Decisions
 - Node.js 20+ and TypeScript
-- Official MCP SDK with stdio first
-- Use LinkedIn `/rest/posts`
-- Human approval remains mandatory and separate from preparation/rendering
-- Diagram generation and LinkedIn publication must remain separate actions
-- MVP diagram complexity capped at 12 nodes and 20 edges
-- Generated artifact must be previewable before publishing
-- No unattended scheduler in the MCP
-- Small tasks and frequent resumable checkpoints
+- SVG chosen for zero-dependency deterministic local rendering
+- Human approval remains mandatory before LinkedIn publication
+- Generated diagrams are written under `.linkedin-mcp/diagrams` by default
+- Diagram generation and publication are separate MCP actions
+- MVP capped at 12 nodes / 20 edges
+- Token persistence remains deferred
+- Small tasks and resumable checkpoints remain mandatory
 
 ## Current branch
 `feature/handwritten-diagram-posting`
 
-## Existing validation
-- OAuth browser authorization completed successfully
-- MCP token exchange completed successfully
-- Human-approved text post successfully published to the authorized member profile
-
-## Known limitations
-- Existing single-image publishing path still needs a live LinkedIn smoke test.
-- Handwritten renderer is not implemented yet.
-- Token persistence/refresh remains deferred.
+## Known limitation
+The LinkedIn image endpoint has not yet been live-smoke-tested with a generated handwritten SVG. If LinkedIn rejects SVG uploads, the next patch will add PNG rasterization before upload.
 
 ## Next exact step
-Implement `src/diagram-renderer.ts` to convert the validated diagram specification into a deterministic handwritten-style local image without publishing it.
+Complete reviewer/CI pass, merge PR #3, then create `feature/post-scheduling` from master and implement a persistent approved-post scheduling queue.
