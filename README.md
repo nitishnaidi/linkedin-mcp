@@ -1,32 +1,45 @@
 # LinkedIn MCP
 
-Open-source MCP server for creating and publishing LinkedIn content with an explicit human approval step.
+Open-source MCP server for user-approved LinkedIn publishing.
 
-> Early development. The project is intentionally designed around user-controlled publishing rather than unattended posting.
+## MVP capabilities
 
-## Goal
+- LinkedIn OAuth 2.0 connection
+- Text post preparation and publishing
+- Single-image upload and publishing
+- Explicit human approval before publication
+- MCP stdio transport
 
-Connect MCP-compatible AI clients to LinkedIn so a user can prepare a post, review it, and explicitly approve publication.
+## Requirements
 
-## MVP roadmap
+- Node.js 20+
+- LinkedIn Developer App with **Share on LinkedIn** enabled
+- OAuth scopes `openid`, `profile`, and `w_member_social`
 
-1. MCP server foundation
-2. LinkedIn OAuth 2.0
-3. Text post preparation and approval
-4. Image upload + image post publishing
-5. Tests, security hardening, and setup documentation
+## Setup
 
-## Principles
+1. Clone the repository and run `npm install` then `npm run build`.
+2. In your LinkedIn Developer App, add this exact Authorized redirect URL: `http://127.0.0.1:8787/callback`.
+3. Set `LINKEDIN_CLIENT_ID`, `LINKEDIN_CLIENT_SECRET`, and `LINKEDIN_REDIRECT_URI=http://127.0.0.1:8787/callback` in the environment used to launch the MCP server. Never commit the secret.
+4. Configure your MCP client to run `node /absolute/path/to/linkedin-mcp/dist/index.js` with those environment variables.
 
-- Human approval before publishing
-- Least-privilege LinkedIn permissions
-- No credentials committed to source control
-- Provider-neutral MCP interface
-- Small, reviewable implementation increments
+## Test flow
 
-## Status
+1. Call `start_linkedin_connection` and open the returned authorization URL.
+2. Approve LinkedIn access in your browser, then call `complete_linkedin_connection`.
+3. Call `linkedin_connection_status`; it should report `configured: true`.
+4. Call `prepare_linkedin_post` with harmless test text (and optionally a local image path). Review the exact content.
+5. Only after explicit approval, call `publish_linkedin_post` with the same content and `approved: true`. Verify the post on LinkedIn and remove the test post if desired.
 
-See [`docs/PROGRESS.md`](docs/PROGRESS.md) for resumable implementation checkpoints.
+## Security model
+
+Credentials and tokens are never returned by status tools. OAuth state is validated. Access tokens are kept only in the running process for this MVP; restarting requires reconnecting. Publishing is deliberately a separate approval-gated tool call. Do not expose this MCP server directly to the public internet.
+
+## Development
+
+Run `npm run typecheck` and `npm run build`. GitHub Actions performs both checks for pull requests.
+
+See `docs/PROGRESS.md` for the resumable implementation checkpoint.
 
 ## License
 
