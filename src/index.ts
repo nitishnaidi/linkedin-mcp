@@ -5,11 +5,21 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { isConfigured, publishImage, publishText } from "./linkedin.js";
 import { authorizationUrl, exchangeCode, fetchIdentity, runOAuthCallback } from "./oauth.js";
+import { loadToken, saveToken, tokenExpiryIso } from "./tokenStore.js";
 
-const server = new McpServer({ name: "linkedin-mcp", version: "0.3.0" });
+// Restore a previously-completed connection on startup. Without this, every
+// restart of this process (app restart, sleep, the MCP host recycling local
+// server connections) wiped process.env and forced a fresh OAuth run.
+const restored = loadToken();
+if (restored) {
+  process.env.LINKEDIN_ACCESS_TOKEN = restored.accessToken;
+  process.env.LINKEDIN_PERSON_URN = restored.personUrn;
+}
+
+const server = new McpServer({ name: "linkedin-mcp", version: "0.4.0" });
 let pendingConnection: Promise<string> | undefined;
 
-server.tool("linkedin_connection_status", "Check LinkedIn publishing configuration without exposing credentials.", {}, async () => ({ content: [{ type: "text", text: JSON.stringify({ configured: isConfigured() }) }] }));
+server.tool("linkedin_connection_status", "Check LinkedIn publishing configuration without exposing credentials.", {}, async () => ({ content: [{ type: "text", text: JSON.stringify({ configured: isConfigured(), tokenExpiresAt: tokenExpiryIso() }) }] }));
 
 server.tool("start_linkedin_connection", "Start LinkedIn OAuth and return the authorization URL.", {}, async () => {
   const auth = authorizationUrl();
@@ -23,8 +33,11 @@ server.tool("complete_linkedin_connection", "Complete LinkedIn OAuth after autho
   pendingConnection = undefined;
   const token = await exchangeCode(code);
   const identity = await fetchIdentity(token.accessToken);
+  const personUrn = `urn:li:person:${identity.sub}`;
   process.env.LINKEDIN_ACCESS_TOKEN = token.accessToken;
-  process.env.LINKEDIN_PERSON_URN = `urn:li:person:${identity.sub}`;
+  process.env.LINKEDIN_PERSON_URN = personUrn;
+  // Persist to disk so this survives a restart of this process, not just this run.
+  saveToken({ accessToken: token.accessToken, personUrn, expiresAt: Date.now() + token.expiresIn * 1000 });
   return { content: [{ type: "text", text: JSON.stringify({ connected: true, name: identity.name, expiresIn: token.expiresIn }) }] };
 });
 
