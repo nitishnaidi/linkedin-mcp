@@ -1,0 +1,35 @@
+services:
+  linkedin-mcp:
+    build: .
+    restart: unless-stopped
+    environment:
+      MCP_TRANSPORT: http
+      PORT: "3000"
+      MCP_AUTH_TOKEN: ${MCP_AUTH_TOKEN:?set MCP_AUTH_TOKEN in .env}
+      LINKEDIN_CLIENT_ID: ${LINKEDIN_CLIENT_ID:?set LINKEDIN_CLIENT_ID in .env}
+      LINKEDIN_CLIENT_SECRET: ${LINKEDIN_CLIENT_SECRET:?set LINKEDIN_CLIENT_SECRET in .env}
+      LINKEDIN_REDIRECT_URI: https://${MCP_DOMAIN:?set MCP_DOMAIN in .env}/callback
+    volumes:
+      - linkedin_mcp_data:/data
+    expose:
+      - "3000"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      MCP_DOMAIN: ${MCP_DOMAIN:?set MCP_DOMAIN in .env}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - linkedin-mcp
+
+volumes:
+  linkedin_mcp_data:
+  caddy_data:
+  caddy_config:

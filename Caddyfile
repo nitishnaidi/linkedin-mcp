@@ -1,0 +1,3 @@
+{$MCP_DOMAIN} {
+	reverse_proxy linkedin-mcp:3000
+}

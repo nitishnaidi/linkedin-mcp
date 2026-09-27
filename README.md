@@ -47,6 +47,12 @@ The queue itself is durable (a JSON file, not memory), but the once-a-minute aut
 
 Credentials are never returned by status tools. OAuth state is validated. The access token is persisted to `~/.linkedin-mcp/token.json` (not committed, not returned by any tool) so reconnecting isn't required on every restart; it's still a plaintext file on disk, so treat that directory like any other local secret. Publishing (immediate or queued) is deliberately gated behind an explicit `approved: true`. Do not expose this MCP server directly to the public internet.
 
+## Remote deployment
+
+This server can also run as a container reachable over HTTP (e.g. on an existing EC2/Docker
+host) instead of being spawned locally by your MCP client — useful so scheduled posts and
+publishing work without your machine running. See `docs/DEPLOY.md`.
+
 ## Development
 
 Run `npm run typecheck`, `npm test`, and `npm run build`. GitHub Actions performs these checks for pull requests.

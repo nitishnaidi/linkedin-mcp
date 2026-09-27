@@ -27,6 +27,29 @@ export async function fetchIdentity(accessToken: string): Promise<{ sub: string;
   return await response.json() as { sub: string; name?: string };
 }
 
+// Used in HTTP transport mode: the OAuth callback arrives on the same shared
+// HTTP server that serves /mcp (so it can sit behind one reverse proxy/port),
+// rather than a dedicated ephemeral server per connection attempt.
+const pendingCallbacks = new Map<string, { resolve: (code: string) => void; reject: (err: Error) => void }>();
+
+export function waitForCallback(expectedState: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    pendingCallbacks.set(expectedState, { resolve, reject });
+  });
+}
+
+export function handleCallbackRequest(state: string | null, code: string | null, error: string | null): { status: number; body: string } {
+  const entry = state ? pendingCallbacks.get(state) : undefined;
+  if (!entry) return { status: 400, body: "Unknown or expired authorization request. Start the connection again." };
+  pendingCallbacks.delete(state as string);
+  if (error || !code) {
+    entry.reject(new Error(error ?? "Invalid OAuth callback"));
+    return { status: 400, body: "LinkedIn authorization failed. You may close this window." };
+  }
+  entry.resolve(code);
+  return { status: 200, body: "LinkedIn connected. You may close this window and return to your MCP client." };
+}
+
 export async function runOAuthCallback(expectedState: string): Promise<string> {
   const uri = new URL(redirectUri());
   return await new Promise((resolve, reject) => {
