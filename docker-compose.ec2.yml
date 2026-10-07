@@ -1,0 +1,32 @@
+services:
+  linkedin-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: linkedin-mcp:0.6.0
+    restart: unless-stopped
+    init: true
+    env_file:
+      - /etc/linkedin-mcp/linkedin.env
+    environment:
+      LINKEDIN_MCP_QUEUE_PATH: /data/scheduled-posts.json
+    volumes:
+      - linkedin-mcp-data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    network_mode: bridge
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('fs').accessSync('/app/dist/index.js')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    stdin_open: true
+
+volumes:
+  linkedin-mcp-data:
