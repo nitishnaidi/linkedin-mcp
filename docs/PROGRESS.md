@@ -3,39 +3,45 @@
 Resumable development checkpoint.
 
 ## Current milestone
-M4 - Approved post scheduling - IN PROGRESS
+M5 - Hardened Docker/EC2 deployment - IN PROGRESS
 
 ## Completed
 - M1 MCP foundation merged
 - M2 LinkedIn text publishing merged and live validated
-- M3 handwritten diagram preparation/rendering merged in PR #3
-- Reviewer caught SVG incompatibility; diagrams now render to LinkedIn-supported PNG
-- PR #3 final CI passed before merge
-- Created `feature/post-scheduling`
-- Added persistent JSON queue with atomic writes
-- Added schedule/list/cancel/claim/complete queue primitives
+- M3 handwritten diagram preparation/rendering merged
+- M4 approved-post scheduling merged in PR #4
+- Created `feature/docker-ec2-deployment`
+- Added multi-stage production Docker image
+- Added non-root runtime user and persistent `/data` volume
+- Added hardened EC2 Docker Compose deployment with no published ports
+- Added host-side secret injection instructions
+- Added EC2 deployment/security documentation
 
-## M4 task breakdown
-1. [DONE] Persistent scheduled-post data model and storage
-2. [CURRENT] Expose schedule/list/cancel MCP tools with explicit approval requirement
-3. [PENDING] Add scheduler worker that publishes due posts while MCP process is running
-4. [PENDING] Recovery behavior for interrupted `publishing` items
-5. [PENDING] Tests for scheduling, cancellation, due claiming, and failure state
-6. [PENDING] README beginner scheduling instructions
-7. [PENDING] CI + reviewer pass
-8. [PENDING] Open PR for M4
+## M5 task breakdown
+1. [DONE] Production multi-stage Dockerfile
+2. [DONE] Non-root runtime and minimal writable filesystem
+3. [DONE] Persistent Docker volume for scheduler data
+4. [DONE] No-public-port EC2 Compose deployment
+5. [DONE] Runtime-only secret injection
+6. [CURRENT] Validate container build/runtime and CI
+7. [PENDING] Independent security/reviewer pass
+8. [PENDING] Resolve persistent OAuth lifecycle for restart-safe unattended scheduling
+9. [PENDING] PR and merge after gates pass
 
 ## Decisions
-- Only already-approved content may enter the schedule queue
-- Scheduling does not generate or modify post content
-- Queue persists locally under `.linkedin-mcp/scheduled-posts.json` by default
-- ISO-8601 timestamps are stored in UTC
-- Atomic temp-file rename is used for queue writes
-- Scheduler will initially run only while the MCP server process is running
-- Failed publishes are retained for inspection rather than silently retried forever
+- Reuse the existing EC2 host
+- Do not add paid AWS infrastructure for the Docker deployment
+- Do not expose the stdio MCP server publicly
+- Do not bake LinkedIn credentials into the image
+- Keep deployment portable so the same image can move to a separate host later
+- Preserve explicit human approval before a post is scheduled or published
 
 ## Current branch
-`feature/post-scheduling`
+`feature/docker-ec2-deployment`
+
+## Blockers
+- Current OAuth token is process-local unless token/person URN are injected at startup.
+- Remote MCP invocation from Claude Desktop requires a separately designed authenticated transport; an unauthenticated public endpoint is prohibited.
 
 ## Next exact step
-Wire the queue into MCP tools and add the due-post worker using the existing LinkedIn text/image publishers.
+Run CI/build validation, perform an independent Docker/security review, fix findings, then open the M5 pull request.
